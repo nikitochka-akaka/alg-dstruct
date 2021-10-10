@@ -1,0 +1,6 @@
+Task2.MemoryManager/.vs/
+Task2.MemoryManager/Debug/
+Task2.MemoryManager/Task2.MemoryManager/Debug
+*.sln
+*.txt
+*.vcxproj*
