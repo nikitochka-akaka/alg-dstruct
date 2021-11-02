@@ -5,8 +5,8 @@
 #include <time.h>
 #include "BreadthFirstSearch.h"
 
-#define MAX_VERTECIES 2000
-#define RAND 1 + rand() % 2000
+#define MAX_VERTECIES 5000
+#define RAND 1 + rand() % 5000
 
 int QueueAddElement(Queue* queue, int elNumber)
 {
@@ -278,7 +278,7 @@ void BreadthFirstSearch(FILE* filePtr)
 
 void StressTest()
 {
-	FILE* filePtr = fopen("../../Task3.GraphGenerator/Task3.GraphGenerator/Graph.txt", "w+");
+	FILE* filePtr = fopen("Graph.txt", "w+");
 	if (filePtr == null)
 	{
 		return;
