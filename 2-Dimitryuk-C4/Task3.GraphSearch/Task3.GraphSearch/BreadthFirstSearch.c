@@ -225,6 +225,9 @@ void BreadthFirstSearch(FILE* filePtr)
 
 	int** graphMatrix = CreateAdjacencyMatrix(graph, edgesAmount, verticesAmount);
 
+	FILE* timeFilePtr = fopen("TimeResults.txt", "w+");
+	unsigned long long start = clock();
+
 	QueueAddElement(queue, 0);
 	size_t index = 0;
 	bool was = false;
@@ -256,6 +259,12 @@ void BreadthFirstSearch(FILE* filePtr)
 		}
 		index++;
 	}
+
+	unsigned long long end = clock();
+
+	fprintf(timeFilePtr, "Время работы BFS: %lld \n", (end - start) / CLK_TCK);
+
+	fclose(timeFilePtr);
 
 	for (int i = 0; i < verticesAmount; ++i)
 	{

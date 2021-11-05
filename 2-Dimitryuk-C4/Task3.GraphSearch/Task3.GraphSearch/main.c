@@ -10,13 +10,9 @@
  * Vertecies amount: 5000
  * 
  * Stress Test results:
- *     Memory used: 295.48 MB
+ *     Memory used: 390 MB
  * 
- *     Total programm execution time: 42 minutes and 2 seconds or 2522 seconds
- *	   First breakpoint in the begginig of BFS algorithm: 38 minutes and 39 seconds or 2319 seconds
- *	   Second breakpoint in the end of BFS algorithm: 42 minutes and 02 seconds or 2522 seconds
- * 
- *	   BFS execution time: 203 seconds
+ *	   BFS execution time: 47 seconds
  */
 
 int main()
