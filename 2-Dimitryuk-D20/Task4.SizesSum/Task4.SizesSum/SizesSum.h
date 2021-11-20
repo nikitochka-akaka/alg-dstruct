@@ -1,6 +1,6 @@
 #pragma once
 
-#define SUCCESS 0
+#define START 0
 #define TRUE 1
 #define FALSE !TRUE
 
@@ -13,8 +13,7 @@ enum Errors
 	FILE_ERROR
 };
 
-int AddOne(int* number, int count);
-int CheckSum(int* arr, int* result, int count, int requireSum);
-int FindSum(int* arr, int count, int requireSum);
+char Backtracking(int* arr, char* result, int count, int requireSum, int curSum, int curPos);
+int FindSum(int* arr, char* result, int count, int requireSum);
 int SizesSum();
 void StressTest();

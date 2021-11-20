@@ -13,110 +13,22 @@
  * SSD: NVMe 4x 8 GT/s
  *
  * Stress test results:
- *	   Memory used: 765.02 MB
- *	   Algorithm execution time: 49 seconds
+ *     Number: 50'000'000
+ * 
+ *	   Memory used: 306.84 MB
+ *	   Algorithm execution time: 45 seconds
 */
 
-int AddOne(int* number, int count)
-{
-	if (number == NULL)
-	{
-		fprintf(stderr, "\n\nAddOne: Argument null pointer error\n\n");
-
-		return NULL_POINTER;
-	}
-
-	if (count <= 0)
-	{
-		fprintf(stderr, "\n\nAddOne: Count variable invalid value\n\n");
-
-		return INVALID_COUNT;
-	}
-
-	int r = 0;
-
-	if (number[count - 1] == 0)
-	{
-		number[count - 1] = 1;
-
-		return SUCCESS;
-	}
-	else
-	{
-		number[count - 1] = 0;
-
-		r = 1;
-	}
-
-	for (int i = count - 2; i >= 0; --i)
-	{
-		if (r == 0)
-		{
-			return SUCCESS;
-		}
-		else
-		{
-			if (number[i] == 1)
-			{
-				number[i] = 0;
-			}
-			else
-			{
-				number[i] = 1;
-				r = 0;
-			}
-		}
-	}
-
-	return SUCCESS;
-}
-
-int CheckSum(int* arr, int* result, int count, int requireSum)
-{
-	if ((arr == NULL) || (result == NULL))
-	{
-		fprintf(stderr, "\n\nCheckSum: Argument null pointer error\n\n");
-
-		return NULL_POINTER;
-	}
-
-	if (count <= 0)
-	{
-		fprintf(stderr, "\n\nCheckSum: Count variable invalid value\n\n");
-
-		return INVALID_COUNT;
-	}
-
-	if (requireSum == 0)
-	{
-		fprintf(stderr, "\n\nCheckSum: RequireSum variable invalid value\n\n");
-
-		return INVALID_SUM;
-	}
-
-	int curSum = 0;
-
-	for (int i = 0; i < count; ++i)
-	{
-		if (result[i] == 1)
-		{
-			curSum += arr[i];
-		}
-	}
-
-	if (curSum == requireSum)
-	{
-		return TRUE;
-	}
-	else
-	{
-		return FALSE;
-	}
-}
-
-int FindSum(int* arr, int count, int requireSum)
+int FindSum(int* arr, char* result, int count, int requireSum)
 {
 	if (arr == NULL)
+	{
+		fprintf(stderr, "\n\nFindSum: Argument null pointer error\n\n");
+
+		return NULL_POINTER;
+	}
+
+	if (result == NULL)
 	{
 		fprintf(stderr, "\n\nFindSum: Argument null pointer error\n\n");
 
@@ -137,41 +49,89 @@ int FindSum(int* arr, int count, int requireSum)
 		return INVALID_SUM;
 	}
 
-	int* result = (int*)calloc(count, sizeof(int));
-	if (result == NULL)
+	if (Backtracking(arr, result, count, requireSum, START, START))
 	{
-		fprintf(stderr, "\n\nFindSum: can't allocate memory for result array\n\n");
+		for (int i = 0; i < count; ++i)
+		{
+			if (result[i])
+			{
+				printf("%d ", arr[i]);
+			}
+		}
 
-		return MEM_ERROR;
+		return TRUE;
+	}
+	else
+	{
+		printf("0");
 	}
 
-	int amount = pow(2, count) - 1;
+	return FALSE;
+}
 
-	for (int i = 0; i < amount; ++i)
+char Backtracking(int* arr, char* result, int count, int requireSum, int curSum, int curPos)
+{
+	int tmp = 0;
+
+	for (int i = curPos; i < count; ++i)
 	{
-		AddOne(result, count);
-
-		if (CheckSum(arr, result, count, requireSum))
+		if (!result[i])
 		{
-			for (int j = 0; j < count; ++j)
+			tmp = arr[i];
+
+			if (curSum + tmp == requireSum)
 			{
-				if (result[j] == 1)
+				result[i] = TRUE;
+				return TRUE;
+			}
+
+			if (curSum + tmp > requireSum)
+			{
+				if (i != (count - 1))
 				{
-					printf("%d ", arr[j]);
+					continue;
+				}
+				else
+				{
+					result[i] = FALSE;
+					return FALSE;
 				}
 			}
 
-			free(result);
-
-			return TRUE;
+			if (curSum + tmp < requireSum)
+			{
+				result[i] = TRUE;
+				if (Backtracking(arr, result, count, requireSum, curSum + tmp, i))
+				{
+					return TRUE;
+				}
+				else
+				{
+					if (i != (count - 1))
+					{
+						result[i] = FALSE;
+						continue;
+					}
+					else
+					{
+						result[i] = FALSE;
+						return FALSE;
+					}
+				}
+			}
+		}
+		else
+		{
+			if (i != (count - 1))
+			{
+				continue;
+			}
+			else
+			{
+				return FALSE;
+			}
 		}
 	}
-
-	free(result);
-
-	printf("0");
-
-	return FALSE;
 }
 
 int SizesSum()
@@ -205,11 +165,51 @@ int SizesSum()
 
 	fclose(inPtr);
 
-	int result = FindSum(arr, count, requireSum);
+	int newCount = count;
+	for (int i = 0; i < count; ++i)
+	{
+		if (arr[i] > requireSum)
+		{
+			newCount--;
+		}
+
+		if (arr[i] == requireSum)
+		{
+			printf("%d", arr[i]);
+			free(arr);
+			return;
+		}
+	}
+
+	int* newArr = (int*)malloc(newCount * sizeof(int));
+	if (newArr == NULL)
+	{
+		free(arr);
+		return;
+	}
+
+	for (int i = 0, j = 0; i < count; ++i)
+	{
+		if (arr[i] < requireSum)
+		{
+			newArr[j] = arr[i];
+			j++;
+		}
+	}
+
+	char* result = (char*)calloc(count, sizeof(char));
+	if (result == NULL)
+	{
+		fprintf(stderr, "\n\nFindSum: can't allocate memory for result array\n\n");
+
+		return MEM_ERROR;
+	}
+
+	int findSumResult = FindSum(newArr, result, newCount, requireSum);
 
 	free(arr);
 
-	return result;
+	return findSumResult;
 }
 
 void StressTest()
@@ -225,14 +225,21 @@ void StressTest()
 	srand(time(NULL));
 
 	int n = 0;
+	int sum = 0;
+	int tmp = 0;
 
-	fprintf(outPtr, "%d\n", rand() % UINT_MAX);
-	fprintf(outPtr, "%d\n", n = 200000000);
+	fprintf(outPtr, "%d\n", sum = (rand() % UINT_MAX));
+	fprintf(outPtr, "%d\n", n = 50000000);
 
 	for (int i = 0; i < n; ++i)
 	{
-		fprintf(outPtr, "%d ", (rand() % (USHRT_MAX + 2)));
+		if ((tmp = (rand() % (USHRT_MAX + 2))) != sum)
+		{
+			fprintf(outPtr, "%d ", tmp);
+		}
 	}
+
+	fclose(outPtr);
 
 	unsigned long long start = clock();
 
