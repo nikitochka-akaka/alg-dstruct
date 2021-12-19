@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
+#include <stdlib.h>
 
 struct Tree
 {
@@ -12,6 +13,54 @@ struct Tree
 };
 
 typedef struct Tree Tree;
+
+void AddElement(Tree* tree, int key)
+{
+	if (tree == NULL)
+	{
+		fprintf(stderr, "NULL pointer error");
+		return;
+	}
+
+	Tree* newEl = (Tree*)malloc(sizeof(Tree));
+	if (newEl == NULL)
+	{
+		fprintf(stderr, "Can't allocate memory for new tree element");
+		return;
+	}
+
+	Tree* ptr = tree;
+	Tree* prevPtr = NULL;
+	while (ptr != NULL)
+	{
+		prevPtr = ptr;
+		ptr->num += 1;
+
+		if (key < ptr->key)
+		{
+			ptr = ptr->left;
+		}
+		else
+		{
+			ptr = ptr->right;
+		}
+	}
+
+	if (key < prevPtr->key)
+	{
+		prevPtr->left = newEl;
+	}
+	else
+	{
+		prevPtr->right = newEl;
+	}
+
+	newEl->left = NULL;
+	newEl->right = NULL;
+	newEl->parent = prevPtr;
+	newEl->key = key;
+	newEl->num = 1;
+}
 
 Tree* KMin(Tree* tree, int k)
 {
@@ -115,24 +164,26 @@ void PrintKMinElements(Tree* tree, int k)
 
 int main()
 {
-	Tree node8 = { 34, 1, NULL, NULL, NULL };
-	Tree node7 = { 35, 2, NULL, &node8, NULL };
-	Tree node6 = { 32, 1, NULL, NULL, NULL };
-	Tree node5 = { 33, 4, &node7, &node6, NULL };
-	Tree node4 = { 30, 1, NULL, NULL, NULL };
-	Tree node3 = { 26, 1, NULL, NULL, NULL };
-	Tree node2 = { 29, 3, &node4, &node3, NULL };
-	Tree node1 = { 31, 8, &node5, &node2, NULL };
+	Tree* tree = (Tree*)malloc(sizeof(Tree));
+	if (tree == NULL)
+	{
+		return;
+	}
+	tree->left = NULL;
+	tree->right = NULL;
+	tree->parent = NULL;
+	tree->key = 31;
+	tree->num = 1;
 
-	node2.parent = &node1;
-	node3.parent = &node2;
-	node4.parent = &node2;
-	node5.parent = &node1;
-	node6.parent = &node5;
-	node7.parent = &node5;
-	node8.parent = &node7;
+	AddElement(tree, 29);
+	AddElement(tree, 26);
+	AddElement(tree, 30);
+	AddElement(tree, 33);
+	AddElement(tree, 32);
+	AddElement(tree, 35);
+	AddElement(tree, 34);
 
-	PrintKMinElements(&node1, 1);
+	PrintKMinElements(tree, 5);
 
 	return 0;
 }
