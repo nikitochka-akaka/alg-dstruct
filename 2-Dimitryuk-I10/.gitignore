@@ -1,0 +1,5 @@
+src/.vs/
+src/Debug/
+*.sln
+src/Task2.23Tree.Done/*.vcxproj*
+src/Task2.23Tree.Done/Debug/
