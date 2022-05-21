@@ -1,0 +1,5 @@
+src/.vs/
+src/Debug/
+*.sln
+src/Task3/*.vcxproj*
+src/Task3/Debug/
